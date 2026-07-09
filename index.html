@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pontoon Nation · Boating Safety &amp; Captain Certification</title>
+<style>
+  :root{
+    --bg:#f2fbff;
+    --bg-card:#ffffff;
+    --ink:#0d3b52;
+    --ink-soft:#3d6a80;
+    --brand:#0288c7;
+    --brand-deep:#026a9c;
+    --aqua:#00c2d1;
+    --sun:#ff9f1c;
+    --coral:#ff5e5b;
+    --seafoam:#e0f7fa;
+    --good:#2bb673;
+    --warn:#ffb703;
+    --bad:#ef476f;
+    --line:#cfe9f3;
+    --shadow:0 10px 30px rgba(2,105,156,.12);
+    --radius:18px;
+  }
+  [data-theme="dark"]{
+    --bg:#081f2d;
+    --bg-card:#0e2c3f;
+    --ink:#e7f6fd;
+    --ink-soft:#9cc4d6;
+    --brand:#38b6e8;
+    --brand-deep:#7fd4f5;
+    --seafoam:#0c3448;
+    --line:#1c4359;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.65;
+    transition:background .3s,color .3s;
+  }
+  /* ---------- Top nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:100;
+    background:color-mix(in srgb, var(--bg-card) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 20px;}
+  .logo{font-weight:800;font-size:1.05rem;white-space:nowrap;display:flex;align-items:center;gap:8px;color:var(--brand-deep);text-decoration:none;}
+  .logo span.badge{font-size:1.3rem;}
+  .nav-links{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-links a{
+    color:var(--ink-soft);text-decoration:none;font-size:.82rem;font-weight:600;
+    padding:7px 11px;border-radius:999px;white-space:nowrap;transition:.2s;
+  }
+  .nav-links a:hover{background:var(--seafoam);color:var(--brand-deep);}
+  .nav-links a.active{background:var(--brand);color:#fff;}
+  #themeBtn{
+    border:1px solid var(--line);background:var(--bg-card);color:var(--ink);
+    border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.95rem;
+  }
+  .progress-wrap{height:5px;background:var(--seafoam);}
+  #progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--aqua),var(--sun));transition:width .4s;}
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    position:relative;overflow:hidden;text-align:center;
+    padding:84px 20px 150px;
+    background:linear-gradient(180deg,#0288c7 0%,#00b4d8 55%,#48cae4 100%);
+    color:#fff;
+  }
+  [data-theme="dark"] header.hero{background:linear-gradient(180deg,#053a5c 0%,#075a80 60%,#0a769c 100%);}
+  .hero h1{font-size:clamp(2.1rem,5.5vw,3.6rem);font-weight:900;letter-spacing:-.02em;text-shadow:0 3px 14px rgba(0,0,0,.18);}
+  .hero .tagline{font-size:clamp(1.05rem,2.4vw,1.35rem);max-width:640px;margin:16px auto 0;opacity:.95;}
+  .hero .boat{font-size:clamp(3rem,8vw,4.6rem);display:block;margin-bottom:10px;animation:bob 4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
+  .hero .cta-row{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;border:none;cursor:pointer;text-decoration:none;
+    font-weight:800;font-size:1rem;padding:14px 28px;border-radius:999px;transition:.2s;
+  }
+  .btn-sun{background:var(--sun);color:#4a2b00;box-shadow:0 6px 20px rgba(0,0,0,.22);}
+  .btn-sun:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.28);}
+  .btn-ghost{background:rgba(255,255,255,.18);color:#fff;border:2px solid rgba(255,255,255,.7);}
+  .btn-ghost:hover{background:rgba(255,255,255,.3);}
+  .waves{position:absolute;left:0;right:0;bottom:-2px;width:100%;height:90px;display:block;}
+  .waves path{fill:var(--bg);}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1100px;margin:0 auto;padding:30px 20px 60px;}
+  section.module{margin:56px 0;scroll-margin-top:90px;}
+  .module-head{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .module-num{
+    flex:0 0 auto;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--brand),var(--aqua));color:#fff;font-size:1.6rem;
+    box-shadow:var(--shadow);
+  }
+  .module-head h2{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;letter-spacing:-.01em;}
+  .module-head .kicker{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--sun);}
+  .card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:26px 28px;margin-bottom:18px;
+  }
+  .card h3{font-size:1.12rem;margin-bottom:10px;color:var(--brand-deep);}
+  .card p{margin-bottom:12px;color:var(--ink);}
+  .card p:last-child{margin-bottom:0;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:820px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+  ul.tips{list-style:none;}
+  ul.tips li{padding:8px 0 8px 34px;position:relative;}
+  ul.tips li::before{content:"⚓";position:absolute;left:0;top:8px;}
+  ul.tips.sunny li::before{content:"☀️";}
+  ul.tips.danger li::before{content:"⚠️";}
+  .callout{
+    border-left:6px solid var(--sun);background:var(--seafoam);
+    padding:16px 20px;border-radius:0 14px 14px 0;margin:16px 0;
+  }
+  .callout.red{border-left-color:var(--coral);}
+  .callout strong{color:var(--brand-deep);}
+  .fun-fact{
+    display:flex;gap:12px;align-items:flex-start;background:var(--seafoam);
+    border-radius:14px;padding:14px 18px;margin-top:14px;font-size:.95rem;
+  }
+  .fun-fact .emoji{font-size:1.5rem;line-height:1;}
+  table.gear{width:100%;border-collapse:collapse;font-size:.95rem;}
+  table.gear th,table.gear td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);}
+  table.gear th{color:var(--brand-deep);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:800;}
+  .pill.req{background:#ffe3e3;color:#b02a37;}
+  .pill.smart{background:#dcf5e7;color:#1b7a4b;}
+  [data-theme="dark"] .pill.req{background:#5b1f2b;color:#ffb3bd;}
+  [data-theme="dark"] .pill.smart{background:#124a32;color:#8fe8ba;}
+
+  /* ---------- Reveal ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ---------- Knowledge check ---------- */
+  .kc{border:2px dashed var(--line);border-radius:var(--radius);padding:22px 24px;background:var(--bg-card);}
+  .kc .kc-label{font-size:.75rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--sun);margin-bottom:6px;}
+  .kc h4{margin-bottom:14px;font-size:1.05rem;}
+  .kc .opts{display:grid;gap:10px;}
+  .kc button.opt{
+    text-align:left;padding:12px 16px;border-radius:12px;border:1.5px solid var(--line);
+    background:var(--bg);color:var(--ink);cursor:pointer;font-size:.95rem;transition:.15s;
+  }
+  .kc button.opt:hover:not(:disabled){border-color:var(--brand);transform:translateX(4px);}
+  .kc button.opt.correct{background:var(--good);border-color:var(--good);color:#fff;font-weight:700;}
+  .kc button.opt.wrong{background:var(--bad);border-color:var(--bad);color:#fff;}
+  .kc .kc-msg{margin-top:12px;font-weight:700;display:none;}
+  .kc .kc-msg.show{display:block;animation:pop .3s;}
+  @keyframes pop{0%{transform:scale(.9);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+  /* ---------- Capacity calculator ---------- */
+  .calc-row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;margin-bottom:18px;}
+  .calc-field label{display:block;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:6px;}
+  .calc-field input[type=number]{
+    width:130px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);
+    background:var(--bg);color:var(--ink);font-size:1.05rem;font-weight:700;
+  }
+  .stepper{display:flex;align-items:center;gap:10px;}
+  .stepper button{
+    width:42px;height:42px;border-radius:50%;border:none;background:var(--brand);color:#fff;
+    font-size:1.4rem;cursor:pointer;font-weight:800;line-height:1;
+  }
+  .stepper button:hover{background:var(--brand-deep);}
+  .stepper .count{font-size:1.6rem;font-weight:900;min-width:44px;text-align:center;}
+  .gauge-track{height:26px;border-radius:999px;background:var(--seafoam);overflow:hidden;border:1px solid var(--line);}
+  #gaugeFill{height:100%;width:0%;border-radius:999px;background:var(--good);transition:width .4s,background .4s;}
+  #calcVerdict{margin-top:12px;font-weight:800;font-size:1.05rem;}
+  .deck{
+    margin-top:16px;background:linear-gradient(180deg,#bde9f7,#8fd8ef);border-radius:20px;
+    min-height:74px;padding:14px;display:flex;flex-wrap:wrap;gap:6px;align-content:center;justify-content:center;
+    border:3px solid var(--brand);font-size:1.7rem;
+  }
+  [data-theme="dark"] .deck{background:linear-gradient(180deg,#0d3d57,#0a2f45);}
+
+  /* ---------- Checklist ---------- */
+  .check-list{display:grid;gap:10px;}
+  .check-item{
+    display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1.5px solid var(--line);
+    border-radius:14px;padding:13px 18px;cursor:pointer;transition:.2s;user-select:none;
+  }
+  .check-item:hover{border-color:var(--brand);}
+  .check-item.done{background:var(--seafoam);border-color:var(--good);}
+  .check-item.done .txt{text-decoration:line-through;opacity:.65;}
+  .check-item .box{
+    flex:0 0 auto;width:26px;height:26px;border-radius:8px;border:2px solid var(--brand);
+    display:grid;place-items:center;font-size:.95rem;color:#fff;background:transparent;transition:.2s;
+  }
+  .check-item.done .box{background:var(--good);border-color:var(--good);}
+  #launchStatus{margin-top:16px;font-weight:900;font-size:1.15rem;text-align:center;padding:14px;border-radius:14px;background:var(--seafoam);}
+
+  /* ---------- Quiz ---------- */
+  #quiz .q{margin-bottom:26px;}
+  #quiz .q h4{margin-bottom:10px;font-size:1.02rem;}
+  #quiz .q .opts{display:grid;gap:8px;}
+  #quiz label.qopt{
+    display:flex;gap:10px;align-items:flex-start;padding:11px 15px;border:1.5px solid var(--line);
+    border-radius:12px;cursor:pointer;background:var(--bg);transition:.15s;font-size:.95rem;
+  }
+  #quiz label.qopt:hover{border-color:var(--brand);}
+  #quiz label.qopt.sel{border-color:var(--brand);background:var(--seafoam);font-weight:700;}
+  #quiz label.qopt input{margin-top:4px;accent-color:var(--brand);}
+  #quiz label.qopt.mark-right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%, var(--bg-card));}
+  #quiz label.qopt.mark-wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%, var(--bg-card));}
+  .quiz-actions{text-align:center;margin-top:8px;}
+  .btn-brand{background:var(--brand);color:#fff;}
+  .btn-brand:hover{background:var(--brand-deep);transform:translateY(-2px);}
+  .btn-brand:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  /* score ring */
+  #resultPanel{display:none;text-align:center;padding:10px 0;}
+  .ring-wrap{position:relative;width:190px;height:190px;margin:14px auto;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:var(--seafoam);stroke-width:16;}
+  .ring-val{fill:none;stroke:var(--good);stroke-width:16;stroke-linecap:round;transition:stroke-dashoffset 1.4s ease,stroke .4s;}
+  .ring-label{position:absolute;inset:0;display:grid;place-items:center;font-size:2.2rem;font-weight:900;}
+  #resultMsg{font-size:1.2rem;font-weight:800;margin-top:6px;}
+  #resultSub{color:var(--ink-soft);margin-top:6px;}
+
+  /* certificate */
+  #certPanel{display:none;margin-top:26px;text-align:center;}
+  #certName{
+    padding:13px 18px;border-radius:12px;border:1.5px solid var(--line);font-size:1.05rem;
+    width:min(340px,90%);background:var(--bg);color:var(--ink);text-align:center;font-weight:700;
+  }
+  #certCanvas{max-width:100%;border-radius:14px;box-shadow:var(--shadow);margin-top:20px;display:none;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--brand-deep);color:#eaf7ff;text-align:center;padding:44px 20px;margin-top:40px;
+  }
+  [data-theme="dark"] footer{background:#06202e;}
+  footer .byline{font-weight:800;font-size:1.02rem;}
+  footer .disclaim{max-width:720px;margin:12px auto 0;font-size:.85rem;opacity:.85;}
+  .top-link{color:#ffe29a;font-weight:700;text-decoration:none;display:inline-block;margin-top:14px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#top"><span class="badge">🛥️</span> Pontoon&nbsp;Nation</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#m1">Know Your Toon</a>
+      <a href="#driving">Driving</a>
+      <a href="#m2">Life Jackets</a>
+      <a href="#m3">Loading</a>
+      <a href="#m4">Rules</a>
+      <a href="#m5">Weather</a>
+      <a href="#m6">Hazards</a>
+      <a href="#m7">Sober Skipper</a>
+      <a href="#checklist">Checklist</a>
+      <a href="#exam">Get Certified</a>
+    </div>
+    <button id="themeBtn" title="Toggle dark mode">🌙</button>
+  </div>
+  <div class="progress-wrap"><div id="progressBar"></div></div>
+</nav>
+
+<header class="hero" id="top">
+  <span class="boat">🛥️</span>
+  <h1>Pontoon Nation</h1>
+  <p class="tagline">The lively guide to pontoon boating safety — learn the ropes, ace the exam, and earn your <strong>Certified Pontoon Captain</strong> certificate. Party barge responsibly. 🎉</p>
+  <div class="cta-row">
+    <a class="btn btn-sun" href="#m1">⚓ Start the Course</a>
+    <a class="btn btn-ghost" href="#exam">🏆 Skip to the Exam</a>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none"><path d="M0,50 C240,90 480,10 720,45 C960,80 1200,20 1440,55 L1440,90 L0,90 Z"></path></svg>
+</header>
+
+<main>
+
+  <!-- ============ MODULE 1 ============ -->
+  <section class="module reveal" id="m1">
+    <div class="module-head">
+      <div class="module-num">🛟</div>
+      <div><div class="kicker">Module 1</div><h2>Know Your 'Toon</h2></div>
+    </div>
+    <div class="card">
+      <p>A pontoon boat floats on two (or three) aluminum tubes called <strong>pontoons</strong>, topped with a big flat deck. That design makes it wonderfully stable, roomy, and perfect for a crowd — but it also handles differently than a V-hull boat, and knowing those quirks is the heart of pontoon safety.</p>
+      <div class="grid-3">
+        <div>
+          <h3>🐢 Slower to respond</h3>
+          <p>Pontoons turn wide and stop slowly. Plan maneuvers early and give docks, swimmers, and other boats extra room.</p>
+        </div>
+        <div>
+          <h3>🪁 Big wind catcher</h3>
+          <p>That tall fencing and bimini top act like a sail. Wind shoves a pontoon around far more than most boats — especially when docking.</p>
+        </div>
+        <div>
+          <h3>🌊 Flat, low bow</h3>
+          <p>The deck sits close to the water. Driving too fast into big waves can push the bow under — ease off in chop and take waves at an angle.</p>
+        </div>
+      </div>
+      <div class="fun-fact"><span class="emoji">💡</span><div><strong>Fun fact:</strong> the pontoon boat was invented in 1952 by Minnesota farmer Ambrose Weeres, who welded steel barrels together under a wooden platform. Locals called it "the barge." The party had officially begun.</div></div>
+    </div>
+    <div class="kc" data-module="1">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Compared to a typical V-hull powerboat, a pontoon boat…</h4>
+      <div class="opts">
+        <button class="opt">Turns tighter and stops faster</button>
+        <button class="opt" data-correct="1">Turns wider, stops slower, and gets pushed around more by wind</button>
+        <button class="opt">Handles exactly the same</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 2: DRIVING ============ -->
+  <section class="module reveal" id="driving">
+    <div class="module-head">
+      <div class="module-num">☸️</div>
+      <div><div class="kicker">Module 2</div><h2>At the Helm — Driving Your 'Toon</h2></div>
+    </div>
+    <div class="card">
+      <h3>🔑 Before you touch the throttle</h3>
+      <p>Driving a pontoon is easy — that's the trap. It's easy right up until wind, a dock, or a wake asks for skill. Build a little ritual: <strong>clip the engine cut-off lanyard to yourself, trim the motor down, confirm everyone is seated inside the fence, and look all the way around the boat</strong> (especially behind you and at the swim ladder) before shifting out of neutral.</p>
+      <div class="callout"><strong>The golden truth: boats have no brakes.</strong> The only way to stop is to plan early — ease to neutral, let the boat glide off its speed, then use a short, gentle bump of reverse to finish. Everything about good pontoon driving flows from thinking two boat-lengths ahead.</div>
+    </div>
+    <div class="card">
+      <div class="grid-3">
+        <div>
+          <h3>🚀 Getting going</h3>
+          <ul class="tips">
+            <li>Idle away from the dock before adding power — throttle up <strong>smoothly</strong>, never jam it.</li>
+            <li>A pontoon steers from the <strong>stern</strong>: the back swings opposite the way you turn. Leave swing room when pulling away from docks and lifts.</li>
+            <li>Give a heads-up ("coming up!") before accelerating so nobody stumbles.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>↪️ Turning &amp; wakes</h3>
+          <ul class="tips">
+            <li>Turns are <strong>wide and flat</strong> — start them earlier than feels natural and slow down first.</li>
+            <li>Passengers seated <em>before</em> you turn; a sharp turn at speed can slide people (and coolers) across the deck.</li>
+            <li>Cross big wakes <strong>slowly and at a slight angle</strong> — never plow straight into them at speed with that low bow.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>🛑 Slowing &amp; reverse</h3>
+          <ul class="tips">
+            <li>Neutral early, glide, then a soft reverse bump to stop where you want.</li>
+            <li>Reverse is weak and steers oddly on a pontoon — small inputs, low RPM.</li>
+            <li>No-wake zone = <strong>idle speed</strong>, engine barely above a whisper. Your wake is your responsibility, including the damage it does.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🛟 Docking like a pro (even in wind)</h3>
+      <p>Remember Module 1: a pontoon is a giant wind toy. The secret is to make the wind your co-pilot instead of your enemy.</p>
+      <ul class="tips sunny">
+        <li><strong>Prep first:</strong> fenders out, lines ready, one helper assigned — before you're anywhere near the dock.</li>
+        <li><strong>Read the wind.</strong> Blowing toward the dock? Stop a few feet off, parallel, and let it push you in. Blowing off the dock? Approach at a steeper angle with a touch more speed, bow line on first.</li>
+        <li><strong>Slow is pro.</strong> Approach at the slowest speed that still steers, using short bursts of power rather than steady throttle. Never approach faster than you're willing to hit the dock.</li>
+        <li><strong>Bodies are not bumpers.</strong> Hands and feet stay inside — never let anyone wedge a limb between the boat and the dock.</li>
+      </ul>
+      <div class="fun-fact"><span class="emoji">🎯</span><div><strong>Practice move:</strong> on a calm day, toss a life ring in open water and practice pulling up to it from different directions. Ten minutes of that beats an hour of dock drama.</div></div>
+    </div>
+    <div class="kc" data-module="driving">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>You're coming in to stop at a dock. Since a boat has no brakes, the right technique is…</h4>
+      <div class="opts">
+        <button class="opt">Stay in gear and turn away at the last second</button>
+        <button class="opt" data-correct="1">Ease to neutral early, glide off your speed, then use a short gentle burst of reverse</button>
+        <button class="opt">Slam into full reverse at the last moment</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 3 ============ -->
+  <section class="module reveal" id="m2">
+    <div class="module-head">
+      <div class="module-num">🦺</div>
+      <div><div class="kicker">Module 3</div><h2>Life Jackets &amp; Required Gear</h2></div>
+    </div>
+    <div class="card">
+      <h3>The #1 rule of boating</h3>
+      <p>Most boating fatalities are drownings — and in the overwhelming majority of those, the victim wasn't wearing a life jacket. A life jacket only works if it's <strong>on your body</strong>, not stuffed under a seat.</p>
+      <ul class="tips">
+        <li>Carry one <strong>USCG-approved, properly sized, wearable life jacket for every person aboard</strong>. No exceptions, even on a calm day.</li>
+        <li>Under federal law, <strong>children under 13 must wear theirs whenever the boat is underway</strong> (unless below deck or in an enclosed cabin — and check your state, some set different ages).</li>
+        <li>Boats 16 feet and longer (that's basically every pontoon) must also carry a <strong>throwable flotation device</strong> (Type IV ring or cushion), ready to grab.</li>
+        <li>Fit test: zip and buckle it, then have someone lift at the shoulders. If it slides past your ears, it's too big.</li>
+      </ul>
+      <div class="callout"><strong>Skipper move:</strong> hand out life jackets while you give your one-minute safety briefing — where the gear lives, who does what if someone goes in the water. Guests copy the captain, so wear yours.</div>
+    </div>
+    <div class="card">
+      <h3>What has to be on board</h3>
+      <table class="gear">
+        <tr><th>Gear</th><th>Status</th><th>Why</th></tr>
+        <tr><td>Life jacket per person + throwable</td><td><span class="pill req">Required</span></td><td>Flotation when it counts</td></tr>
+        <tr><td>Fire extinguisher (marine-rated)</td><td><span class="pill req">Required</span></td><td>Fuel + electrics = check it yearly</td></tr>
+        <tr><td>Sound device (horn or whistle)</td><td><span class="pill req">Required</span></td><td>Signal intentions &amp; distress</td></tr>
+        <tr><td>Navigation lights</td><td><span class="pill req">Required</span></td><td>Sunset to sunrise &amp; low visibility</td></tr>
+        <tr><td>Visual distress signals</td><td><span class="pill req">Required*</span></td><td>*On coastal &amp; many larger waters</td></tr>
+        <tr><td>Anchor + line</td><td><span class="pill smart">Smart</span></td><td>Hold position if engine dies</td></tr>
+        <tr><td>First-aid kit, paddle, phone in dry bag</td><td><span class="pill smart">Smart</span></td><td>Small problems stay small</td></tr>
+        <tr><td>Engine cut-off switch lanyard — worn</td><td><span class="pill req">Required</span></td><td>Federal law on most boats under 26 ft when running on plane</td></tr>
+      </table>
+    </div>
+    <div class="kc" data-module="2">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Under federal law, who must actually <em>wear</em> a life jacket while a pontoon is underway?</h4>
+      <div class="opts">
+        <button class="opt">Only people who can't swim</button>
+        <button class="opt" data-correct="1">Children under 13 (and every state sets its own kid rules — check yours)</button>
+        <button class="opt">Nobody — carrying them aboard is always enough</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 4 ============ -->
+  <section class="module reveal" id="m3">
+    <div class="module-head">
+      <div class="module-num">⚖️</div>
+      <div><div class="kicker">Module 4</div><h2>Loading &amp; Capacity — Don't Sink the Party</h2></div>
+    </div>
+    <div class="card">
+      <p>Every pontoon has a <strong>capacity plate</strong> (usually near the helm) listing the maximum number of people and maximum weight it can safely carry. That flat deck makes it tempting to keep piling friends on — resist. Overloading is one of the top causes of pontoon accidents.</p>
+      <ul class="tips sunny">
+        <li><strong>Respect the plate.</strong> The lower limit wins: 10 people <em>or</em> 1,500 lbs means whichever you hit first.</li>
+        <li><strong>Spread the load.</strong> Keep weight balanced side-to-side and avoid clustering everyone at the bow or one corner — a lopsided 'toon plows, lists, and steers badly.</li>
+        <li><strong>People stay inside the fence</strong> while underway. Coolers and gear get secured so they don't slide.</li>
+        <li>Rough water? Waves and wakes effectively <em>reduce</em> safe capacity. Lighten up and slow down.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🧮 Try it: The Capacity Calculator</h3>
+      <p>Set your boat's plate limits, then load up your crew and cargo. Watch the meter!</p>
+      <div class="calc-row">
+        <div class="calc-field"><label>Plate: max persons</label><input type="number" id="maxPersons" value="10" min="1" max="30"></div>
+        <div class="calc-field"><label>Plate: max weight (lbs)</label><input type="number" id="maxWeight" value="1800" min="400" step="50"></div>
+        <div class="calc-field"><label>Gear &amp; cooler weight (lbs)</label><input type="number" id="gearWeight" value="100" min="0" step="10"></div>
+        <div class="calc-field">
+          <label>People aboard (est. 185 lbs each)</label>
+          <div class="stepper">
+            <button id="minusBtn" aria-label="Remove person">−</button>
+            <div class="count" id="peopleCount">6</div>
+            <button id="plusBtn" aria-label="Add person">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="gauge-track"><div id="gaugeFill"></div></div>
+      <div id="calcVerdict"></div>
+      <div class="deck" id="deckViz" title="Your deck"></div>
+    </div>
+    <div class="kc" data-module="3">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Your capacity plate says "10 persons or 1,500 lbs." You have 8 big buddies plus loaded coolers totaling 1,600 lbs. Can you go?</h4>
+      <div class="opts">
+        <button class="opt">Yes — 8 is fewer than 10 people, so you're fine</button>
+        <button class="opt" data-correct="1">No — you're over the weight limit, and the lower limit always wins</button>
+        <button class="opt">Yes, as long as everyone stands in the middle</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 5 ============ -->
+  <section class="module reveal" id="m4">
+    <div class="module-head">
+      <div class="module-num">🧭</div>
+      <div><div class="kicker">Module 5</div><h2>Rules of the Water</h2></div>
+    </div>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <h3>Meeting other boats</h3>
+          <ul class="tips">
+            <li><strong>Head-on:</strong> both boats steer right (starboard) and pass port-to-port — just like driving.</li>
+            <li><strong>Crossing:</strong> the boat on your <strong>right</strong> has the right of way. Slow down or turn behind it.</li>
+            <li><strong>Overtaking:</strong> the boat being passed has the right of way. Pass wide, watch your wake.</li>
+            <li><strong>Sailboats, paddlers, swimmers, anchored boats:</strong> you give way. A pontoon under power is low on the pecking order.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Reading the markers</h3>
+          <ul class="tips">
+            <li><strong>"Red, Right, Returning":</strong> keep red markers on your right when heading back in from open water.</li>
+            <li><strong>White buoy, orange diamond:</strong> danger — rocks, shoals, dams. Steer clear.</li>
+            <li><strong>Diamond with a cross:</strong> boats keep out (swim areas, spillways).</li>
+            <li><strong>Circle:</strong> restriction, like a 5-mph or no-wake zone. On a pontoon, no-wake means idle speed.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout"><strong>Right of way ≠ force of way.</strong> Your real job under the rules is simple: do whatever it takes to avoid a collision, even if you technically have the right of way.</div>
+    </div>
+    <div class="kc" data-module="4">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Two power boats approach head-on. What should each do?</h4>
+      <div class="opts">
+        <button class="opt">Speed up and pass on whichever side is open</button>
+        <button class="opt">Both turn left and pass starboard-to-starboard</button>
+        <button class="opt" data-correct="1">Both steer to starboard (right) and pass port-to-port</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 6 ============ -->
+  <section class="module reveal" id="m5">
+    <div class="module-head">
+      <div class="module-num">⛈️</div>
+      <div><div class="kicker">Module 6</div><h2>Weather &amp; Water Wisdom</h2></div>
+    </div>
+    <div class="card">
+      <p>A pontoon's tall profile and flat bow make it especially unhappy in sudden storms. The good news: storms rarely sneak up on a skipper who's paying attention.</p>
+      <div class="grid-2">
+        <div>
+          <h3>Before you launch</h3>
+          <ul class="tips sunny">
+            <li>Check the marine or local forecast the morning of — not last night's.</li>
+            <li>Know when wind is due to build. Afternoon thunderstorms are a classic lake ambush.</li>
+            <li>File a <strong>float plan</strong>: tell someone ashore where you're going and when you'll be back.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>On the water, watch for</h3>
+          <ul class="tips danger">
+            <li>Towering dark clouds, a sudden temperature drop, or a shifting gusty wind — head for shore <strong>early</strong>, not when it hits.</li>
+            <li>Whitecaps building: slow down, trim for it, cross big wakes at a slight angle at low speed.</li>
+            <li>Lightning: get off the water. If caught out, keep everyone low and centered, away from rails and the bimini frame.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fun-fact"><span class="emoji">🥶</span><div><strong>Cold water is sneaky:</strong> falling into water under ~60°F triggers an involuntary gasp reflex that can drown a strong swimmer in seconds. Early-season pontooning = life jackets on, period.</div></div>
+    </div>
+    <div class="kc" data-module="5">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Dark clouds are stacking up and the wind just swung around and got gusty. Best move?</h4>
+      <div class="opts">
+        <button class="opt" data-correct="1">Head to the nearest safe shore or dock now, before it hits</button>
+        <button class="opt">Keep cruising — pontoons are stable in any weather</button>
+        <button class="opt">Anchor in open water and wait it out under the bimini</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 7 ============ -->
+  <section class="module reveal" id="m6">
+    <div class="module-head">
+      <div class="module-num">⚠️</div>
+      <div><div class="kicker">Module 7</div><h2>Pontoon-Specific Hazards</h2></div>
+    </div>
+    <div class="card">
+      <h3>🚫 Bow riding: the big one</h3>
+      <p>Sitting on the front deck outside the fence, dangling legs over the water while underway, feels like a pontoon thing to do. <strong>It's the most dangerous thing you can do on a pontoon.</strong> One wave-bounce and a rider slips off the low bow — directly into the path of the boat and its propeller. Everyone stays inside the fence, seated, whenever the boat is moving. Captains enforce this one like it's the law, because in most states it is.</p>
+    </div>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <h3>🌀 Propeller safety</h3>
+          <ul class="tips danger">
+            <li><strong>Engine OFF — not just in neutral — whenever anyone is swimming near or using the ladder.</strong></li>
+            <li>Do a walk-around and head count before every restart.</li>
+            <li>Never back toward a person in the water.</li>
+            <li>Wear the engine cut-off lanyard at the helm.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>🪢 Anchoring &amp; docking</h3>
+          <ul class="tips">
+            <li>Anchor from the <strong>bow</strong>, never the stern — stern-anchoring can swamp a boat.</li>
+            <li>Let out plenty of line (5–7× the water depth).</li>
+            <li>Docking in wind: approach slow and shallow-angled, use short bursts of power, and let the wind work for you when you can. Fenders out, hands and feet in.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout red"><strong>Swim ladder rule:</strong> the ladder goes down only after the engine is off, and the engine starts only after the ladder is up and everyone is counted aboard. Make it a ritual.</div>
+    </div>
+    <div class="kc" data-module="6">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Friends want to sit on the bow deck outside the fence with their feet in the water while you cruise. You say…</h4>
+      <div class="opts">
+        <button class="opt">Sure, as long as we go slow</button>
+        <button class="opt">Only if they hold the rail</button>
+        <button class="opt" data-correct="1">No — bow riding risks a fall directly into the propeller's path. Inside the fence while underway, always</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 8 ============ -->
+  <section class="module reveal" id="m7">
+    <div class="module-head">
+      <div class="module-num">🧑‍✈️</div>
+      <div><div class="kicker">Module 8</div><h2>Sober Skipper &amp; Emergencies</h2></div>
+    </div>
+    <div class="card">
+      <h3>🍹 The Sober Skipper rule</h3>
+      <p>Alcohol is the leading contributing factor in fatal boating accidents. Operating a boat at or above <strong>0.08% BAC is Boating Under the Influence</strong> — same as driving — and sun, wind, motion, and dehydration multiply alcohol's effects on the water ("boater's fatigue"). The move that keeps the party fun: <strong>designate a sober skipper before you leave the dock.</strong> Guests can enjoy responsibly; the person at the helm doesn't.</p>
+    </div>
+    <div class="card">
+      <h3>🆘 When things go wrong</h3>
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size:.95rem;">Person overboard</h3>
+          <ul class="tips danger">
+            <li>Shout <strong>"Man overboard!"</strong> and point — assign one person to never take their eyes off them.</li>
+            <li>Throw the Type IV flotation immediately.</li>
+            <li>Circle back slowly, approach from downwind, and <strong>kill the engine</strong> before bringing them to the ladder.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="font-size:.95rem;">Engine dies / taking on trouble</h3>
+          <ul class="tips">
+            <li>Anchor from the bow so you don't drift into danger.</li>
+            <li>Signal: horn (5 blasts = danger), waving arms, VHF 16 or phone.</li>
+            <li>Life jackets on everyone the moment anything feels wrong — not after.</li>
+            <li>If capsized or swamped, <strong>stay with the boat</strong>; it floats and it's easier to spot than a swimmer.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="kc" data-module="7">
+      <div class="kc-label">⚡ Knowledge Check</div>
+      <h4>Someone falls off the pontoon. What happens first?</h4>
+      <div class="opts">
+        <button class="opt">Jump in after them right away</button>
+        <button class="opt" data-correct="1">Shout "man overboard," assign a pointer to keep eyes on them, and throw the throwable flotation</button>
+        <button class="opt">Immediately gun the engine and circle back fast</button>
+      </div>
+      <div class="kc-msg"></div>
+    </div>
+  </section>
+
+  <!-- ============ CHECKLIST ============ -->
+  <section class="module reveal" id="checklist">
+    <div class="module-head">
+      <div class="module-num">✅</div>
+      <div><div class="kicker">Interactive Tool</div><h2>Pre-Departure Checklist</h2></div>
+    </div>
+    <div class="card">
+      <p>Run this every single time before you leave the dock. Tap each item as you go:</p>
+      <div class="check-list" id="checkList">
+        <div class="check-item"><div class="box">✓</div><div class="txt">Weather forecast checked — no storms or building wind expected</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Life jacket aboard for every person, kids' jackets ON, throwable within reach</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Passenger &amp; weight count is under the capacity plate</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Fuel topped off (⅓ out, ⅓ back, ⅓ reserve) — no fuel odor</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Fire extinguisher, horn, lights, and anchor checked</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Float plan shared with someone staying ashore</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Sober skipper designated; engine cut-off lanyard at the helm</div></div>
+        <div class="check-item"><div class="box">✓</div><div class="txt">Safety briefing done: gear locations, seating rules, ladder ritual</div></div>
+      </div>
+      <div id="launchStatus">⚓ 0 of 8 complete — not ready to launch</div>
+    </div>
+  </section>
+
+  <!-- ============ EXAM ============ -->
+  <section class="module reveal" id="exam">
+    <div class="module-head">
+      <div class="module-num">🏆</div>
+      <div><div class="kicker">Final Exam</div><h2>Pontoon Captain Certification</h2></div>
+    </div>
+    <div class="card">
+      <p><strong>13 questions. Score 80% or better</strong> and you'll earn your official (officially unofficial 😄) <strong>Certified Pontoon Captain</strong> certificate — downloadable, frameable, and highly brag-worthy. Answer every question, then hit the big button.</p>
+      <div id="quiz"></div>
+      <div class="quiz-actions">
+        <button class="btn btn-brand" id="submitQuiz">🚤 Grade My Exam</button>
+      </div>
+      <div id="resultPanel">
+        <div class="ring-wrap">
+          <svg width="190" height="190" viewBox="0 0 190 190">
+            <circle class="ring-bg" cx="95" cy="95" r="80"></circle>
+            <circle class="ring-val" id="ringVal" cx="95" cy="95" r="80" stroke-dasharray="502.65" stroke-dashoffset="502.65"></circle>
+          </svg>
+          <div class="ring-label" id="ringLabel">0%</div>
+        </div>
+        <div id="resultMsg"></div>
+        <div id="resultSub"></div>
+      </div>
+      <div id="certPanel">
+        <h3 style="margin-bottom:12px;">🎓 Claim your certificate</h3>
+        <input type="text" id="certName" placeholder="Enter your captain name" maxlength="40">
+        <div style="margin-top:14px;">
+          <button class="btn btn-brand" id="makeCert">⚓ Generate Certificate</button>
+          <a class="btn btn-sun" id="downloadCert" style="display:none;" download="pontoon-captain-certificate.png">⬇️ Download PNG</a>
+        </div>
+        <canvas id="certCanvas" width="1600" height="1130"></canvas>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div style="font-size:2rem;margin-bottom:10px;">🛥️ 🌊 ☀️</div>
+  <div class="byline">Created by Wes Griffin · Designed &amp; built with AI.</div>
+  <p class="disclaim">This site is for education and fun. It is <strong>not</strong> an official boater education card or a substitute for your state's approved boating safety course (find yours via your state boating agency or NASBLA-approved providers). Always follow U.S. Coast Guard regulations and local law.</p>
+  <a class="top-link" href="#top">⬆ Back to the helm</a>
+</footer>
+
+<script>
+/* ---------------- Theme ---------------- */
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);themeBtn.textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem('pn-theme',t);}catch(e){}}
+themeBtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+try{const s=localStorage.getItem('pn-theme');if(s)setTheme(s);else if(matchMedia('(prefers-color-scheme: dark)').matches)setTheme('dark');}catch(e){}
+
+/* ---------------- Scroll: progress bar, scrollspy, reveal ---------------- */
+const bar=document.getElementById('progressBar');
+const navA=[...document.querySelectorAll('#navLinks a')];
+const sections=navA.map(a=>document.querySelector(a.getAttribute('href')));
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  let cur=0;
+  sections.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<140)cur=i;});
+  navA.forEach((a,i)=>a.classList.toggle('active',i===cur));
+},{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------------- Knowledge checks ---------------- */
+document.querySelectorAll('.kc').forEach(kc=>{
+  const msg=kc.querySelector('.kc-msg');
+  kc.querySelectorAll('button.opt').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const right=btn.hasAttribute('data-correct');
+      kc.querySelectorAll('button.opt').forEach(b=>{b.disabled=true;if(b.hasAttribute('data-correct'))b.classList.add('correct');});
+      if(!right)btn.classList.add('wrong');
+      msg.textContent=right?'🎉 Nailed it, Captain!':'🌊 Not quite — the green answer is the safe one.';
+      msg.style.color=right?'var(--good)':'var(--bad)';
+      msg.classList.add('show');
+    });
+  });
+});
+
+/* ---------------- Capacity calculator ---------------- */
+const PP=185;
+const els={mp:maxPersons,mw:maxWeight,gw:gearWeight,count:peopleCount,fill:gaugeFill,verdict:calcVerdict,deck:deckViz};
+let people=6;
+function calc(){
+  const mp=+els.mp.value||1,mw=+els.mw.value||1,gw=+els.gw.value||0;
+  const w=people*PP+gw;
+  const pct=Math.max(w/mw,people/mp)*100;
+  els.count.textContent=people;
+  els.fill.style.width=Math.min(pct,100)+'%';
+  els.fill.style.background=pct<=80?'var(--good)':pct<=100?'var(--warn)':'var(--bad)';
+  els.deck.innerHTML='🧑‍✈️'+'🧍'.repeat(Math.max(people-1,0))+(gw>0?' 🧊':'');
+  if(pct>100){
+    els.verdict.textContent=`🚨 OVERLOADED — ${w.toLocaleString()} lbs / ${people} people. The lower plate limit wins. Lighten the load!`;
+    els.verdict.style.color='var(--bad)';
+  }else if(pct>80){
+    els.verdict.textContent=`⚠️ Cutting it close (${Math.round(pct)}% of capacity). Fine on flat water — rough water says leave margin.`;
+    els.verdict.style.color='var(--warn)';
+  }else{
+    els.verdict.textContent=`✅ Smooth sailing — ${Math.round(pct)}% of capacity (${w.toLocaleString()} lbs, ${people} aboard).`;
+    els.verdict.style.color='var(--good)';
+  }
+}
+plusBtn.addEventListener('click',()=>{people=Math.min(people+1,30);calc();});
+minusBtn.addEventListener('click',()=>{people=Math.max(people-1,0);calc();});
+[els.mp,els.mw,els.gw].forEach(i=>i.addEventListener('input',calc));
+calc();
+
+/* ---------------- Checklist ---------------- */
+const items=[...document.querySelectorAll('.check-item')];
+const status=document.getElementById('launchStatus');
+items.forEach(it=>it.addEventListener('click',()=>{
+  it.classList.toggle('done');
+  const n=items.filter(i=>i.classList.contains('done')).length;
+  if(n===items.length){status.textContent='🚀 ALL CLEAR — ready to launch. Have a great day on the water, Captain!';status.style.color='var(--good)';}
+  else{status.textContent=`⚓ ${n} of ${items.length} complete — not ready to launch`;status.style.color='';}
+}));
+
+/* ---------------- Final exam ---------------- */
+const QUESTIONS=[
+  {q:"How many wearable life jackets must a pontoon carry?",o:["One per adult — kids can share","One USCG-approved, properly sized jacket for every person aboard","Two total, as long as they're near the helm"],a:1},
+  {q:"Under federal law, children under what age must WEAR a life jacket while the boat is underway?",o:["Age 8","Age 13","Age 18"],a:1},
+  {q:"Where do you find your pontoon's maximum people/weight limits?",o:["The capacity plate near the helm","The owner's forum","Guess based on deck space"],a:0},
+  {q:"'Bow riding' (sitting outside the front fence while underway) is…",o:["Fine under 10 mph","A pontoon tradition","Extremely dangerous — a fall puts the rider in the propeller's path"],a:2},
+  {q:"Two powerboats meet head-on. Each should…",o:["Steer to starboard (right) and pass port-to-port","Steer to port and pass starboard-to-starboard","Stop and honk until the other moves"],a:0},
+  {q:"'Red, Right, Returning' reminds you to…",o:["Give red buoys right of way","Keep red markers on your right when returning from open water","Turn right at every red buoy"],a:1},
+  {q:"Swimmers want to climb back aboard on the ladder. Before they approach, you…",o:["Shift to neutral","Turn the engine completely OFF","Rev slightly so they can find the boat"],a:1},
+  {q:"The blood alcohol limit for operating a boat is…",o:["There isn't one on the water","0.10%","0.08% — same as driving, and BUI is a crime"],a:2},
+  {q:"You see towering dark clouds and the wind suddenly shifts and gusts. You should…",o:["Head to the nearest safe shore or dock immediately","Speed to the far side of the lake to outrun it","Anchor mid-lake and huddle under the bimini"],a:0},
+  {q:"Best way to load people and coolers on a pontoon:",o:["Everyone up front for a better view","Balanced side-to-side and spread out, staying under the capacity plate","It doesn't matter, pontoons can't tip"],a:1},
+  {q:"Boats 16 feet or longer must also carry…",o:["A throwable Type IV flotation device, kept ready to grab","A second anchor","A backup captain's hat"],a:0},
+  {q:"Someone falls overboard. Your FIRST actions are…",o:["Everyone jumps in to help","Shout 'man overboard,' assign a spotter to point, and throw the flotation","Speed over immediately with the engine running"],a:1},
+  {q:"Boats have no brakes. The right way to stop a pontoon at a dock is…",o:["Ease to neutral early, glide off your speed, then a short gentle burst of reverse","Hold speed and swing away at the last second","Slam into full reverse right before impact"],a:0}
+];
+const quizEl=document.getElementById('quiz');
+QUESTIONS.forEach((item,qi)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML=`<h4>${qi+1}. ${item.q}</h4><div class="opts">`+
+    item.o.map((o,oi)=>`<label class="qopt"><input type="radio" name="q${qi}" value="${oi}"><span>${o}</span></label>`).join('')+`</div>`;
+  quizEl.appendChild(d);
+});
+quizEl.addEventListener('change',e=>{
+  const lab=e.target.closest('label');if(!lab)return;
+  lab.parentElement.querySelectorAll('label').forEach(l=>l.classList.remove('sel'));
+  lab.classList.add('sel');
+});
+const PASS=80;
+document.getElementById('submitQuiz').addEventListener('click',()=>{
+  const answers=QUESTIONS.map((_,i)=>document.querySelector(`input[name=q${i}]:checked`));
+  if(answers.some(a=>!a)){alert('Answer every question first, Captain! ⚓');return;}
+  let score=0;
+  QUESTIONS.forEach((item,i)=>{
+    const chosen=+answers[i].value;
+    const labels=[...document.querySelectorAll(`input[name=q${i}]`)].map(inp=>inp.closest('label'));
+    labels.forEach(l=>l.classList.remove('mark-right','mark-wrong'));
+    labels[item.a].classList.add('mark-right');
+    if(chosen===item.a)score++;else labels[chosen].classList.add('mark-wrong');
+  });
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const panel=document.getElementById('resultPanel');panel.style.display='block';
+  const ring=document.getElementById('ringVal'),C=502.65;
+  ring.style.stroke=pct>=PASS?'var(--good)':'var(--bad)';
+  requestAnimationFrame(()=>{ring.style.strokeDashoffset=C-(C*pct/100);});
+  let n=0;const t=setInterval(()=>{n+=2;if(n>=pct){n=pct;clearInterval(t);}document.getElementById('ringLabel').textContent=n+'%';},22);
+  const msg=document.getElementById('resultMsg'),sub=document.getElementById('resultSub'),cert=document.getElementById('certPanel');
+  if(pct>=PASS){
+    msg.textContent=`🎉 ${score}/${QUESTIONS.length} — You passed, Captain!`;msg.style.color='var(--good)';
+    sub.textContent='Claim your certificate below and wear that captain\'s hat with pride.';
+    cert.style.display='block';window.__pnScore=pct;
+    cert.scrollIntoView({behavior:'smooth',block:'center'});
+  }else{
+    msg.textContent=`🌊 ${score}/${QUESTIONS.length} — Not quite (need ${PASS}%).`;msg.style.color='var(--bad)';
+    sub.textContent='Review the green answers above, brush up on the modules, and take it again. The lake will wait!';
+    cert.style.display='none';
+  }
+  panel.scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+/* ---------------- Certificate ---------------- */
+document.getElementById('makeCert').addEventListener('click',()=>{
+  const name=(document.getElementById('certName').value||'').trim();
+  if(!name){alert('Every captain needs a name! ⚓');return;}
+  const cv=document.getElementById('certCanvas'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  // background
+  const g=x.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#e8f8ff');g.addColorStop(1,'#c2ecfa');
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  // wave bands
+  for(let b=0;b<3;b++){
+    x.beginPath();x.moveTo(0,H-60-b*46);
+    for(let i=0;i<=W;i+=20)x.lineTo(i,H-60-b*46+Math.sin(i/90+b*2)*14);
+    x.lineTo(W,H);x.lineTo(0,H);x.closePath();
+    x.fillStyle=['#7ad4f0','#38b6e8','#0288c7'][b];x.globalAlpha=.75;x.fill();x.globalAlpha=1;
+  }
+  // sun
+  x.beginPath();x.arc(W-190,170,90,0,7);x.fillStyle='#ffd166';x.fill();
+  x.strokeStyle='#ffb703';x.lineWidth=6;
+  for(let r=0;r<12;r++){const a=r*Math.PI/6;x.beginPath();x.moveTo(W-190+Math.cos(a)*108,170+Math.sin(a)*108);x.lineTo(W-190+Math.cos(a)*132,170+Math.sin(a)*132);x.stroke();}
+  // border
+  x.strokeStyle='#0288c7';x.lineWidth=14;x.strokeRect(40,40,W-80,H-80);
+  x.strokeStyle='#ffb703';x.lineWidth=4;x.strokeRect(64,64,W-128,H-128);
+  // rope corners
+  x.font='64px serif';x.fillText('⚓',86,140);x.fillText('⚓',W-150,140);
+  // text
+  x.textAlign='center';x.fillStyle='#026a9c';
+  x.font='900 44px Helvetica, Arial, sans-serif';
+  x.fillText('🛥️  PONTOON NATION  🛥️',W/2,160);
+  x.font='800 30px Helvetica, Arial, sans-serif';x.fillStyle='#3d6a80';
+  x.fillText('BOATING SAFETY CERTIFICATION COURSE',W/2,212);
+  x.font='900 100px Georgia, serif';x.fillStyle='#0d3b52';
+  x.fillText('Certified Pontoon Captain',W/2,360);
+  x.font='400 34px Georgia, serif';x.fillStyle='#3d6a80';
+  x.fillText('This certifies that',W/2,440);
+  // name
+  x.font='italic 900 84px Georgia, serif';x.fillStyle='#0288c7';
+  x.fillText(name,W/2,552);
+  x.strokeStyle='#ffb703';x.lineWidth=5;
+  x.beginPath();x.moveTo(W/2-440,582);x.lineTo(W/2+440,582);x.stroke();
+  x.font='400 32px Georgia, serif';x.fillStyle='#3d6a80';
+  x.fillText('has demonstrated mastery of pontoon boating safety — driving, life jackets, loading,',W/2,650);
+  x.fillText('navigation rules, weather wisdom, propeller safety, and the Sober Skipper rule —',W/2,698);
+  x.fillText('and is hereby entrusted with the helm of the party barge.',W/2,746);
+  // score + date
+  const score=window.__pnScore||100;
+  const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  x.font='800 34px Helvetica, Arial, sans-serif';x.fillStyle='#026a9c';
+  x.textAlign='left';x.fillText(`Exam score: ${score}%`,140,880);
+  x.textAlign='right';x.fillText(`Awarded: ${today}`,W-140,880);
+  // badge
+  x.textAlign='center';
+  x.beginPath();x.arc(W/2,880,88,0,7);x.fillStyle='#ffd166';x.fill();
+  x.lineWidth=8;x.strokeStyle='#ff9f1c';x.stroke();
+  x.font='70px serif';x.fillText('🛟',W/2,905);
+  x.font='800 24px Helvetica, Arial, sans-serif';x.fillStyle='#4a2b00';
+  x.fillText('SAFETY FIRST',W/2,1000);
+  x.font='700 22px Helvetica, Arial, sans-serif';x.fillStyle='#ffffff';
+  x.fillText('Educational certification — not an official state boater education card.',W/2,H-104);
+  cv.style.display='block';
+  const dl=document.getElementById('downloadCert');
+  dl.href=cv.toDataURL('image/png');dl.style.display='inline-block';
+  cv.scrollIntoView({behavior:'smooth',block:'center'});
+});
+</script>
+</body>
+</html>
